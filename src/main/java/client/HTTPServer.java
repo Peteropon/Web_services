@@ -4,10 +4,8 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -30,6 +28,51 @@ public class HTTPServer implements Runnable{
 
     public void run() {
 
+        readRequest();
+        sendGetResponse();
+
+    }
+
+    private void sendGetResponse() {
+        File file = new File(WEB_ROOT, "index.html");
+        int fileLength = (int) file.length();
+        String content = "text/html";
+
+        try {
+            byte[] fileData = readFileData(file, fileLength);
+            PrintWriter out = new PrintWriter(socket.getOutputStream());
+            out.println("HTTP/1.1 200 OK");
+            out.println("Server: Java HTTP Server from SSaurel : 1.0");
+            out.println("Date: " + new Date());
+            out.println("Content-type: " + content);
+            out.println("Content-length: " + fileLength);
+            out.println();
+            out.flush();
+
+            BufferedOutputStream dataOut = new BufferedOutputStream(socket.getOutputStream());
+            dataOut.write(fileData, 0, fileLength);
+            dataOut.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+    }
+
+    private void readRequest() {
+        try {
+            BufferedReader in =new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String input = in.readLine();
+            StringTokenizer parse = new StringTokenizer(input);
+            String httpMethod = parse.nextToken().toUpperCase();
+            String fileName = parse.nextToken().toLowerCase();
+            System.out.println(" type is " + httpMethod +
+                    " and the file is " + fileName);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
@@ -49,6 +92,21 @@ public class HTTPServer implements Runnable{
         } catch (IOException e) {
             System.err.println("Server connection error" + e.getMessage());
         }
+    }
+
+    private byte[] readFileData(File file, int fileLength) throws IOException {
+        FileInputStream fileIn = null;
+        byte[] fileData = new byte[fileLength];
+
+        try {
+            fileIn = new FileInputStream(file);
+            fileIn.read(fileData);
+        } finally {
+            if (fileIn != null)
+                fileIn.close();
+        }
+
+        return fileData;
     }
 
 }
