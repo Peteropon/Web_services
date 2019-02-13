@@ -16,7 +16,7 @@ public class HTTPServer implements Runnable{
 
     static final int PORT = 8081;
     static final String FILE_NOT_FOUND ="404.html";
-    static final String DEFAULT_FILE = "index.html";
+    static final String DEFAULT_FILE = "src/index.html";
     static final File WEB_ROOT = new File(".");
     static final boolean verbose = true;
 
@@ -34,7 +34,7 @@ public class HTTPServer implements Runnable{
     }
 
     private void sendGetResponse() {
-        File file = new File(WEB_ROOT, "index.html");
+        File file = new File(WEB_ROOT, "src/index.html");
         int fileLength = (int) file.length();
         String content = "text/html";
 
@@ -52,6 +52,9 @@ public class HTTPServer implements Runnable{
             BufferedOutputStream dataOut = new BufferedOutputStream(socket.getOutputStream());
             dataOut.write(fileData, 0, fileLength);
             dataOut.flush();
+
+            System.out.println("Response sent successfully.");
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -62,13 +65,11 @@ public class HTTPServer implements Runnable{
 
     private void readRequest() {
         try {
-            BufferedReader in =new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String input = in.readLine();
             StringTokenizer parse = new StringTokenizer(input);
             String httpMethod = parse.nextToken().toUpperCase();
             String fileName = parse.nextToken().toLowerCase();
-            System.out.println(" type is " + httpMethod +
-                    " and the file is " + fileName);
 
         } catch (IOException e) {
             e.printStackTrace();
