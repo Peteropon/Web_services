@@ -9,8 +9,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Date;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class HTTPServer implements Runnable{
 
@@ -19,6 +18,7 @@ public class HTTPServer implements Runnable{
     static final String DEFAULT_FILE = "src/index.html";
     static final File WEB_ROOT = new File(".");
     static final boolean verbose = true;
+    static List<HTTPMethod> httpMethods = new ArrayList();
 
     private Socket socket;
 
@@ -28,13 +28,14 @@ public class HTTPServer implements Runnable{
 
     public void run() {
 
+        System.out.println(Thread.currentThread().getName());
         readRequest();
         sendGetResponse();
 
     }
 
     private void sendGetResponse() {
-        File file = new File(WEB_ROOT, "src/index.html");
+        File file = new File( "C:/Users/bkay_/IdeaProjects/Web_services/src/KottbullarRecept.html");
         int fileLength = (int) file.length();
         String content = "text/html";
 
@@ -69,7 +70,14 @@ public class HTTPServer implements Runnable{
             String input = in.readLine();
             StringTokenizer parse = new StringTokenizer(input);
             String httpMethod = parse.nextToken().toUpperCase();
-            String fileName = parse.nextToken().toLowerCase();
+            String request = parse.nextToken().toLowerCase();
+            for (HTTPMethod method: httpMethods) {
+                if(method.getClass().getSimpleName().toUpperCase().equals(httpMethod)){
+                    method.execute(request, socket);
+                }
+                System.out.println(method.getClass().getSimpleName());
+                System.out.println(httpMethods.size());
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -81,6 +89,7 @@ public class HTTPServer implements Runnable{
             ServerSocket serverSocket = new ServerSocket(PORT);
             System.out.println("Server started.\nListening for connections on port: "
                 + PORT + "...");
+            httpMethods.addAll(Arrays.asList(new Get(), new Head(), new Post()));
             while (true){
                 HTTPServer server = new HTTPServer(serverSocket.accept());
 
