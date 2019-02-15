@@ -30,40 +30,41 @@ public class HTTPServer implements Runnable{
 
         System.out.println(Thread.currentThread().getName());
         readRequest();
-        //sendResponse();
-
-    }
-
-    private void sendResponse() {
-
-        File file = new File(  "src/KottbullarRecept.html");
-        int fileLength = (int) file.length();
-        String content = "text/html";
-
         try {
-            byte[] fileData = readFileData(file, fileLength);
-            PrintWriter out = new PrintWriter(socket.getOutputStream());
-            out.println("HTTP/1.1 200 OK");
-            out.println("Server: Java HTTP Server from Mr Johansson's : 1.0");
-            out.println("Date: " + new Date());
-            out.println("Content-type: " + content);
-            out.println("Content-length: " + fileLength);
-            out.println();
-            out.flush();
-
-            BufferedOutputStream dataOut = new BufferedOutputStream(socket.getOutputStream());
-            dataOut.write(fileData, 0, fileLength);
-            dataOut.flush();
-
-            System.out.println("Response sent successfully.");
-
+            socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-
-
     }
+
+//    private void sendResponse() {
+//
+//        File file = new File(  "src/KottbullarRecept.html");
+//        int fileLength = (int) file.length();
+//        String content = "text/html";
+//
+//        try {
+//            byte[] fileData = readFileData(file, fileLength);
+//            PrintWriter out = new PrintWriter(socket.getOutputStream());
+//            out.println("HTTP/1.1 200 OK");
+//            out.println("Server: Java HTTP Server from Mr Johansson's : 1.0");
+//            out.println("Date: " + new Date());
+//            out.println("Content-type: " + content);
+//            out.println("Content-length: " + fileLength);
+//            out.println();
+//            out.flush();
+//
+//            BufferedOutputStream dataOut = new BufferedOutputStream(socket.getOutputStream());
+//            dataOut.write(fileData, 0, fileLength);
+//            dataOut.flush();
+//
+//
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     private void readRequest() {
         try {
@@ -106,19 +107,5 @@ public class HTTPServer implements Runnable{
         }
     }
 
-    private byte[] readFileData(File file, int fileLength) throws IOException {
-        FileInputStream fileIn = null;
-        byte[] fileData = new byte[fileLength];
-
-        try {
-            fileIn = new FileInputStream(file);
-            fileIn.read(fileData);
-        } finally {
-            if (fileIn != null)
-                fileIn.close();
-        }
-
-        return fileData;
-    }
 
 }
