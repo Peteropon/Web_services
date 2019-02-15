@@ -5,6 +5,7 @@ import java.net.Socket;
 import java.util.Date;
 
 import static client.HTTPServer.FILE_NOT_FOUND;
+import static client.Head.getBytes;
 
 public class Get implements HTTPMethod {
     public void execute(String request, Socket clientSocket){
@@ -49,7 +50,7 @@ public class Get implements HTTPMethod {
 
     private String getContentType(String request) {
         if(request.endsWith(".html") || request.endsWith(".htm")) return "text/html";
-        else if(request.endsWith(".png") || request.endsWith(".jpg")) return "text/image";
+        else if(request.endsWith(".jpg")) return "text/jpg";
         else if (request.endsWith(".json")) return "text/json";
         else if (request.endsWith(".js")) return "text/js";
         else if (request.endsWith(".pdf")) return "text/pdf";
@@ -57,18 +58,7 @@ public class Get implements HTTPMethod {
     }
 
     private byte[] readFileData(File file, int fileLength) throws IOException {
-        FileInputStream fileIn = null;
-        byte[] fileData = new byte[fileLength];
-
-        try {
-            fileIn = new FileInputStream(file);
-            fileIn.read(fileData);
-        } finally {
-            if (fileIn != null)
-                fileIn.close();
-        }
-
-        return fileData;
+        return getBytes(file, fileLength);
     }
 
     private void fileNotFound(String request, Socket clientSocket){
@@ -79,7 +69,7 @@ public class Get implements HTTPMethod {
             byte[] fileData = readFileData(file, fileLength);
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream());
             out.println("HTTP/1.1 404 File Not Found");
-            out.println("Server: Java HTTP Server from SSaurel : 1.0");
+            out.println("Server: Java HTTP Server from Mr Johansson's : 1.0");
             out.println("Date: " + new Date());
             out.println("Content-type: " + content);
             out.println("Content-length: " + fileLength);

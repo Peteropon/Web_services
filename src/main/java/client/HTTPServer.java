@@ -70,6 +70,7 @@ public class HTTPServer implements Runnable{
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String input = in.readLine();
+            System.out.println(input);
             StringTokenizer parse =  new StringTokenizer(input);
             String httpMethod = parse.nextToken().toUpperCase();
             String request = parse.nextToken().toLowerCase();
@@ -79,7 +80,6 @@ public class HTTPServer implements Runnable{
                     method.execute(request, socket);
                 }
                 System.out.println(method.getClass().getSimpleName());
-                System.out.println(httpMethods.size());
             }
 
         } catch (IOException e) {
