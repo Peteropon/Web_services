@@ -30,12 +30,13 @@ public class HTTPServer implements Runnable{
 
         System.out.println(Thread.currentThread().getName());
         readRequest();
-        sendGetResponse();
+        //sendResponse();
 
     }
 
-    private void sendGetResponse() {
-        File file = new File( "C:/Users/bkay_/IdeaProjects/Web_services/src/KottbullarRecept.html");
+    private void sendResponse() {
+
+        File file = new File(  "src/KottbullarRecept.html");
         int fileLength = (int) file.length();
         String content = "text/html";
 
@@ -43,7 +44,7 @@ public class HTTPServer implements Runnable{
             byte[] fileData = readFileData(file, fileLength);
             PrintWriter out = new PrintWriter(socket.getOutputStream());
             out.println("HTTP/1.1 200 OK");
-            out.println("Server: Java HTTP Server from SSaurel : 1.0");
+            out.println("Server: Java HTTP Server from Mr Johansson's : 1.0");
             out.println("Date: " + new Date());
             out.println("Content-type: " + content);
             out.println("Content-length: " + fileLength);
@@ -68,9 +69,10 @@ public class HTTPServer implements Runnable{
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String input = in.readLine();
-            StringTokenizer parse = new StringTokenizer(input);
+            StringTokenizer parse =  new StringTokenizer(input);
             String httpMethod = parse.nextToken().toUpperCase();
             String request = parse.nextToken().toLowerCase();
+            System.out.println(request);
             for (HTTPMethod method: httpMethods) {
                 if(method.getClass().getSimpleName().toUpperCase().equals(httpMethod)){
                     method.execute(request, socket);
