@@ -5,10 +5,11 @@ import java.net.Socket;
 import java.util.Date;
 
 import static client.HTTPServer.FILE_NOT_FOUND;
+import static client.HTTPServer.WEB_ROOT;
 
 public class Head implements HTTPMethod, HTTPResponse{
     public void execute(String request, Socket clientSocket) {
-        File file = new File(".", request);
+        File file = new File(WEB_ROOT, request);
         int fileLength = (int) file.length();
         String content = getContentType(request);
         printResponse(content, file, fileLength, clientSocket);
@@ -39,17 +40,18 @@ public class Head implements HTTPMethod, HTTPResponse{
 
     public String getContentType(String request) {
         if(request.endsWith(".html") || request.endsWith(".htm")) return "text/html";
-        else if(request.endsWith(".png") || request.endsWith(".jpg")) return "text/image";
+        else if(request.endsWith(".png") || request.endsWith(".jpg")) return "text/jpg";
+        else if(request.endsWith(".css")) return "text/css";
         else if (request.endsWith(".json")) return "text/json";
         else if (request.endsWith(".js")) return "text/js";
         else if (request.endsWith(".pdf")) return "text/pdf";
-        else return "404.html";
+        else return "text/plain";
     }
 
     @Override
     public void fileNotFound(String request, Socket clientSocket) {
         try {
-            File file = new File(".", FILE_NOT_FOUND);
+            File file = new File(WEB_ROOT, FILE_NOT_FOUND);
             int fileLength = (int) file.length();
             String content = "text/html";
             byte[] fileData = readFileData(file, fileLength);

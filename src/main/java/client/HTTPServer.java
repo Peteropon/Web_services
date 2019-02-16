@@ -16,6 +16,7 @@ public class HTTPServer implements Runnable{
     static final int PORT = 8081;
     static final String FILE_NOT_FOUND ="404.html";
     static final String DEFAULT_FILE = "src/index.html";
+    static final String METHOD_NOT_SUPPORTED = "not_supported.html";
     static final File WEB_ROOT = new File(".");
     static final boolean verbose = true;
     static List<HTTPMethod> httpMethods = new ArrayList();
@@ -38,39 +39,10 @@ public class HTTPServer implements Runnable{
 
     }
 
-//    private void sendResponse() {
-//
-//        File file = new File(  "src/KottbullarRecept.html");
-//        int fileLength = (int) file.length();
-//        String content = "text/html";
-//
-//        try {
-//            byte[] fileData = readFileData(file, fileLength);
-//            PrintWriter out = new PrintWriter(socket.getOutputStream());
-//            out.println("HTTP/1.1 200 OK");
-//            out.println("Server: Java HTTP Server from Mr Johansson's : 1.0");
-//            out.println("Date: " + new Date());
-//            out.println("Content-type: " + content);
-//            out.println("Content-length: " + fileLength);
-//            out.println();
-//            out.flush();
-//
-//            BufferedOutputStream dataOut = new BufferedOutputStream(socket.getOutputStream());
-//            dataOut.write(fileData, 0, fileLength);
-//            dataOut.flush();
-//
-//
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
     private void readRequest() {
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String input = in.readLine();
-            System.out.println(input);
             StringTokenizer parse =  new StringTokenizer(input);
             String httpMethod = parse.nextToken().toUpperCase();
             String request = parse.nextToken().toLowerCase();
@@ -79,7 +51,6 @@ public class HTTPServer implements Runnable{
                 if(method.getClass().getSimpleName().toUpperCase().equals(httpMethod)){
                     method.execute(request, socket);
                 }
-                System.out.println(method.getClass().getSimpleName());
             }
 
         } catch (IOException e) {

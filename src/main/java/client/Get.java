@@ -5,6 +5,7 @@ import java.net.Socket;
 import java.util.Date;
 
 import static client.HTTPServer.FILE_NOT_FOUND;
+import static client.HTTPServer.WEB_ROOT;
 import static client.Head.getBytes;
 
 public class Get implements HTTPMethod {
@@ -18,7 +19,7 @@ public class Get implements HTTPMethod {
             System.out.println(first);
         }
         else {
-            File file = new File(".", request);
+            File file = new File(WEB_ROOT, request);
             int fileLength = (int) file.length();
             String content = getContentType(request);
             try {
@@ -50,11 +51,12 @@ public class Get implements HTTPMethod {
 
     private String getContentType(String request) {
         if(request.endsWith(".html") || request.endsWith(".htm")) return "text/html";
+        else if(request.endsWith(".css")) return "text/css";
         else if(request.endsWith(".jpg")) return "text/jpg";
         else if (request.endsWith(".json")) return "text/json";
         else if (request.endsWith(".js")) return "text/js";
         else if (request.endsWith(".pdf")) return "text/pdf";
-        else return "404.html";
+        else return "text/plain";
     }
 
     private byte[] readFileData(File file, int fileLength) throws IOException {
@@ -63,7 +65,7 @@ public class Get implements HTTPMethod {
 
     private void fileNotFound(String request, Socket clientSocket){
         try {
-            File file = new File(".", FILE_NOT_FOUND);
+            File file = new File(WEB_ROOT, FILE_NOT_FOUND);
             int fileLength = (int) file.length();
             String content = "text/html";
             byte[] fileData = readFileData(file, fileLength);
@@ -73,8 +75,8 @@ public class Get implements HTTPMethod {
             out.println("Date: " + new Date());
             out.println("Content-type: " + content);
             out.println("Content-length: " + fileLength);
-            out.println(); // blank line between headers and content, very important !
-            out.flush(); // flush character output stream buffer
+            out.println();
+            out.flush();
             BufferedOutputStream dataOut = new BufferedOutputStream(clientSocket.getOutputStream());
             dataOut.write(fileData, 0, fileLength);
             dataOut.flush();
