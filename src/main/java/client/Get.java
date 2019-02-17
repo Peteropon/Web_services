@@ -9,7 +9,8 @@ import static client.HTTPServer.WEB_ROOT;
 import static client.Head.getBytes;
 
 public class Get extends HTTPMethod {
-    public void execute(String request, Socket clientSocket){
+
+    public void startWork(String request, Socket clientSocket, HTTPMethod target){
 
         int index = request.endsWith("/") ? request.indexOf("/", 1) : 1;
         String first = request.substring(1, index);
