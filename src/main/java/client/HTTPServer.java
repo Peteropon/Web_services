@@ -54,21 +54,32 @@ public class HTTPServer implements Runnable, MethodHandler{
         }
     }
 
-    private void readRequest() {
+    public void readRequest() {
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String input = in.readLine();
             StringTokenizer parse =  new StringTokenizer(input);
             String httpMethod = parse.nextToken().toUpperCase();
             String request = parse.nextToken().toLowerCase();
-            System.out.println(request);
-            for (HTTPMethod method: httpMethods) {
-                if(method.getClass().getSimpleName().toUpperCase().equals(httpMethod)){
-                    startWork(request, socket, method);
-                }
-            }
+            System.out.println(httpMethod);
 
-        } catch (IOException e) {
+            Class<?> requestType = Class.forName(httpMethod);
+            Class<?> httpType = requestType.getClass();
+            Constructor c = requestType.getConstructor(httpType);
+            HTTPMethod method = (HTTPMethod) c.newInstance(httpType);
+            //HTTPMethod response = (HTTPMethod) requestType.newInstance();
+            method.execute(request, socket);
+
+
+
+//            for (HTTPMethod method: httpMethods) {
+//                if(method.getClass().getSimpleName().toUpperCase().equals(httpMethod)){
+//                    method.execute(request, socket);
+//                }
+//            }
+
+        } catch (IOException | ClassNotFoundException | InstantiationException | IllegalAccessException
+                | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
         }
     }
