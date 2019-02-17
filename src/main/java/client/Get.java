@@ -11,49 +11,58 @@ public class Get extends HTTPMethod {
 
     public void startWork(String request, Socket clientSocket, HTTPMethod target){
 
-        int index = request.endsWith("/") ? request.indexOf("/", 1) : 1;
+        //int index = request.endsWith("/") ? request.indexOf("/", 1) : 1;
+        int index = 8;
         String first = request.substring(1, index);
-        if(first.equalsIgnoreCase("feature")){
-            String functionName = request.substring(index + 1, request.indexOf("/", index + 1));
-            System.out.println(functionName);
+        if (first.equalsIgnoreCase("feature")) {
+            String methodName = request.substring(index + 1, request.indexOf("=", index + 1));
             System.out.println(first);
-            for (Feature f: features){
-                if(f.getClass().getSimpleName().equalsIgnoreCase(functionName)){
-                    f.execute();
-                }
+            System.out.println(methodName);
+            String param = request.substring(request.lastIndexOf("=") + 1);
+            System.out.println(param);
+            for (Feature f : features) {
+                //if(f.getClass().getSimpleName().equalsIgnoreCase("feature1")){
+                f.execute(param);
+                //}
             }
-        }
-        else {
+        } else {
             File file = new File(WEB_ROOT, request);
             System.out.println("Requested type: " + request);
             int fileLength = (int) file.length();
             String content = getContentType(request);
-            try {
-                byte[] fileData = readFileData(file, fileLength);
-                PrintWriter out = new PrintWriter(clientSocket.getOutputStream());
-                out.println("HTTP/1.1 200 OK");
-                out.println("Server: Java HTTP Server from Mr Johansson's : 1.0");
-                out.println("Date: " + new Date());
-                out.println("Content-type: " + content);
-                out.println("Content-length: " + fileLength);
-                out.println();
-                out.flush();
+            printResponse(content, file, fileLength, clientSocket);
+        }
+    }
 
-                BufferedOutputStream dataOut = new BufferedOutputStream(clientSocket.getOutputStream());
-                dataOut.write(fileData, 0, fileLength);
-                dataOut.flush();
-                dataOut.close();
-                System.out.println("Response sent successfully.");
+    private void printResponse(String content, File file, int fileLength, Socket clientSocket){
 
-            } catch (FileNotFoundException fnf){
-                fileNotFound(request, clientSocket);
-            } catch (IOException e) {
-                e.printStackTrace();
 
-            }
+        try {
+            byte[] fileData = readFileData(file, fileLength);
+            PrintWriter out = new PrintWriter(clientSocket.getOutputStream());
+            out.println("HTTP/1.1 200 OK");
+            out.println("Server: Java HTTP Server from Mr Johansson's : 1.0");
+            out.println("Date: " + new Date());
+            out.println("Content-type: " + content);
+            out.println("Content-length: " + fileLength);
+            out.println();
+            out.flush();
+
+            BufferedOutputStream dataOut = new BufferedOutputStream(clientSocket.getOutputStream());
+            dataOut.write(fileData, 0, fileLength);
+            dataOut.flush();
+            dataOut.close();
+            System.out.println("Response sent successfully.");
+
+        } catch (FileNotFoundException fnf){
+            fileNotFound(content, clientSocket);
+        } catch (IOException e) {
+            e.printStackTrace();
+
         }
 
     }
+
 
     private String getContentType(String request) {
         if(request.endsWith(".html") || request.endsWith(".htm")) return "text/html";
