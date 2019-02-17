@@ -7,15 +7,16 @@ import java.util.Date;
 import static client.HTTPServer.FILE_NOT_FOUND;
 import static client.HTTPServer.WEB_ROOT;
 
-public class Head implements HTTPMethod, HTTPResponse{
+public class Head extends HTTPMethod {
     public void execute(String request, Socket clientSocket) {
         File file = new File(WEB_ROOT, request);
+        System.out.println(request);
         int fileLength = (int) file.length();
         String content = getContentType(request);
         printResponse(content, file, fileLength, clientSocket);
     }
 
-    @Override
+
     public void printResponse(String content, File file, int fileLength, Socket clientSocket){
         PrintWriter out;
         try {
@@ -27,8 +28,9 @@ public class Head implements HTTPMethod, HTTPResponse{
             out.println("Content-type: " + content);
             out.println("Content-length: " + fileLength);
             out.println();
+            out.flush();
             BufferedOutputStream dataOut = new BufferedOutputStream(clientSocket.getOutputStream());
-            dataOut.write(fileData, 0, fileLength);
+            //dataOut.write(fileData, 0, fileLength);
             dataOut.flush();
             dataOut.close();
             System.out.println("Response sent successfully.");
@@ -48,7 +50,7 @@ public class Head implements HTTPMethod, HTTPResponse{
         else return "text/plain";
     }
 
-    @Override
+
     public void fileNotFound(String request, Socket clientSocket) {
         try {
             File file = new File(WEB_ROOT, FILE_NOT_FOUND);
@@ -61,11 +63,12 @@ public class Head implements HTTPMethod, HTTPResponse{
             out.println("Date: " + new Date());
             out.println("Content-type: " + content);
             out.println("Content-length: " + fileLength);
-            out.println(); // blank line between headers and content, very important !
-            out.flush(); // flush character output stream buffer
+            out.println();
+            out.flush();
             BufferedOutputStream dataOut = new BufferedOutputStream(clientSocket.getOutputStream());
             dataOut.write(fileData, 0, fileLength);
             dataOut.flush();
+            dataOut.close();
         }catch (IOException io){
             System.err.println("Error with file not found exception : " + io.getMessage());
         }

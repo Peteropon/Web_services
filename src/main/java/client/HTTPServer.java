@@ -18,7 +18,7 @@ public class HTTPServer implements Runnable{
     static final String DEFAULT_FILE = "src/index.html";
     static final String METHOD_NOT_SUPPORTED = "not_supported.html";
     static final File WEB_ROOT = new File(".");
-    static final boolean verbose = true;
+
     static List<HTTPMethod> httpMethods = new ArrayList();
 
     private Socket socket;
@@ -58,25 +58,7 @@ public class HTTPServer implements Runnable{
         }
     }
 
-    public static void main(String[] args) {
-        try {
-            ServerSocket serverSocket = new ServerSocket(PORT);
-            System.out.println("Server started.\nListening for connections on port: "
-                + PORT + "...");
-            httpMethods.addAll(Arrays.asList(new Get(), new Head(), new Post()));
-            while (true){
-                HTTPServer server = new HTTPServer(serverSocket.accept());
 
-                if(verbose) System.out.println("Connection established. " + new Date());
-
-                Thread thread = new Thread(server);
-                thread.start();
-            }
-
-        } catch (IOException e) {
-            System.err.println("Server connection error" + e.getMessage());
-        }
-    }
 
 
 }

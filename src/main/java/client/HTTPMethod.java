@@ -3,8 +3,10 @@ package client;
 import java.io.FileNotFoundException;
 import java.net.Socket;
 
-public interface HTTPMethod {
+public class HTTPMethod {
 
-    void execute(String request, Socket clientSocket) throws FileNotFoundException;
+    void execute(String request, Socket clientSocket) {
+
+    }
 
 }

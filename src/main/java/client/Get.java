@@ -8,7 +8,7 @@ import static client.HTTPServer.FILE_NOT_FOUND;
 import static client.HTTPServer.WEB_ROOT;
 import static client.Head.getBytes;
 
-public class Get implements HTTPMethod {
+public class Get extends HTTPMethod {
     public void execute(String request, Socket clientSocket){
 
         int index = request.endsWith("/") ? request.indexOf("/", 1) : 1;
@@ -20,6 +20,7 @@ public class Get implements HTTPMethod {
         }
         else {
             File file = new File(WEB_ROOT, request);
+            System.out.println(request);
             int fileLength = (int) file.length();
             String content = getContentType(request);
             try {
@@ -55,7 +56,7 @@ public class Get implements HTTPMethod {
         else if(request.endsWith(".jpg")) return "text/jpg";
         else if (request.endsWith(".json")) return "text/json";
         else if (request.endsWith(".js")) return "text/js";
-        else if (request.endsWith(".pdf")) return "text/pdf";
+        else if (request.endsWith(".pdf")) return "text/plain";
         else return "text/plain";
     }
 
@@ -80,6 +81,7 @@ public class Get implements HTTPMethod {
             BufferedOutputStream dataOut = new BufferedOutputStream(clientSocket.getOutputStream());
             dataOut.write(fileData, 0, fileLength);
             dataOut.flush();
+            dataOut.close();
         }catch (IOException io){
             System.err.println("Error with file not found exception : " + io.getMessage());
         }
