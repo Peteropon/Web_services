@@ -7,6 +7,7 @@ import static client.HTTPServer.WEB_ROOT;
 public class Feature {
 
     static final String REVERSE ="Reverse.html";
+    static final String BACKUP = "Reverse_backup.html";
     private File htmlFile;
 
     public void createHTML(String param) {
@@ -22,7 +23,7 @@ public class Feature {
     private void WriteToFile(String content) {
         File file = new File(WEB_ROOT, REVERSE);
         if (file.exists()){
-            File newFile = new File(WEB_ROOT, REVERSE + "backup");
+            File newFile = new File(WEB_ROOT, BACKUP);
             file.renameTo(newFile);
             try {
                 file.createNewFile();

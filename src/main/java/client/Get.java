@@ -15,9 +15,8 @@ public class Get extends HTTPMethod {
         int index = 8;
         String first = request.substring(1, index);
         if (first.equalsIgnoreCase("feature")) {
-            String methodName = request.substring(index + 1, request.indexOf("=", index + 1));
+//            String methodName = request.substring(index + 1, request.indexOf("=", index + 1));
             System.out.println(first);
-            System.out.println(methodName);
             String param = request.substring(request.lastIndexOf("=") + 1);
             System.out.println(param);
             for (Feature f : features) {
