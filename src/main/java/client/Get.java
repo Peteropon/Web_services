@@ -22,20 +22,15 @@ public class Get extends HTTPMethod {
             System.out.println(param);
             for (Feature f : features) {
                 //if(f.getClass().getSimpleName().equalsIgnoreCase("feature1")){
-                f.execute(param);
+                f.createHTML(param);
                 //}
             }
         } else {
-            File file = new File(WEB_ROOT, request);
-            System.out.println("Requested type: " + request);
-            int fileLength = (int) file.length();
-            String content = getContentType(request);
             printResponse(content, file, fileLength, clientSocket);
         }
     }
 
     private void printResponse(String content, File file, int fileLength, Socket clientSocket){
-
 
         try {
             byte[] fileData = readFileData(file, fileLength);

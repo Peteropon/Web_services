@@ -68,7 +68,7 @@ public class HTTPServer implements Runnable, MethodHandler{
 //            Constructor c = requestType.getConstructor(httpType);
 //            HTTPMethod method = (HTTPMethod) c.newInstance(httpType);
 //            //HTTPMethod response = (HTTPMethod) requestType.newInstance();
-//            method.execute(request, socket);
+//            method.createHTML(request, socket);
 
 
 
