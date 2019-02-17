@@ -10,7 +10,7 @@ import static client.HTTPServer.WEB_ROOT;
 public class Head extends HTTPMethod {
     public void startWork(String request, Socket clientSocket, HTTPMethod target) {
         File file = new File(WEB_ROOT, request);
-        System.out.println(request);
+        System.out.println("Requested type: " + request);
         int fileLength = (int) file.length();
         String content = getContentType(request);
         printResponse(content, file, fileLength, clientSocket);

@@ -2,7 +2,7 @@ package client;
 
 import java.net.Socket;
 
-public class HTTPMethod {
+public abstract class HTTPMethod {
 
     public HTTPMethod() {
     }

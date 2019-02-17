@@ -4,8 +4,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Date;
 
-import static client.HTTPServer.FILE_NOT_FOUND;
-import static client.HTTPServer.WEB_ROOT;
+import static client.HTTPServer.*;
 import static client.Head.getBytes;
 
 public class Get extends HTTPMethod {
@@ -14,14 +13,19 @@ public class Get extends HTTPMethod {
 
         int index = request.endsWith("/") ? request.indexOf("/", 1) : 1;
         String first = request.substring(1, index);
-        if(first.equalsIgnoreCase("function")){
+        if(first.equalsIgnoreCase("feature")){
             String functionName = request.substring(index + 1, request.indexOf("/", index + 1));
             System.out.println(functionName);
             System.out.println(first);
+            for (Feature f: features){
+                if(f.getClass().getSimpleName().equalsIgnoreCase(functionName)){
+                    f.execute();
+                }
+            }
         }
         else {
             File file = new File(WEB_ROOT, request);
-            System.out.println(request);
+            System.out.println("Requested type: " + request);
             int fileLength = (int) file.length();
             String content = getContentType(request);
             try {

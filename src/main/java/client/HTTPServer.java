@@ -15,6 +15,7 @@ public class HTTPServer implements Runnable, MethodHandler{
     static final File WEB_ROOT = new File(".");
 
     static List<HTTPMethod> httpMethods = new ArrayList();
+    static List<Feature> features = new ArrayList();
 
     private Socket socket;
     HTTPMethod Method = new HTTPMethod();
@@ -30,8 +31,8 @@ public class HTTPServer implements Runnable, MethodHandler{
 
     public void run() {
 
-        System.out.println(Thread.currentThread().getName());
         readRequest();
+        System.out.println(Thread.currentThread().getName());
         try {
             socket.close();
         } catch (IOException e) {
@@ -60,7 +61,7 @@ public class HTTPServer implements Runnable, MethodHandler{
             StringTokenizer parse =  new StringTokenizer(input);
             String httpMethod = parse.nextToken().toUpperCase();
             String request = parse.nextToken().toLowerCase();
-            System.out.println(httpMethod);
+            System.out.println("HTTP method: " + httpMethod);
 
 //            Class<?> requestType = Class.forName(httpMethod);
 //            Class<?> httpType = requestType.getClass();
