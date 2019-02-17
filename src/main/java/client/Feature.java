@@ -14,7 +14,9 @@ public class Feature {
 
         StringBuilder html = new StringBuilder();
         html.append("<!DOCTYPE html>\n<html><head><title>Reverse Writing </title></head>\n")
-                .append("<body>").append(" <bdo dir=\"rtl\">").append(param).append("</bdo> \n")
+                .append("<body>")
+                .append("<h3>Here is the text you wrote from right to left:</h3>")
+                .append(" <bdo dir=\"rtl\">").append(param).append("</bdo> \n")
                 .append("</body></html>");
         System.out.println("Creating html file");
         WriteToFile(html.toString());

@@ -25,6 +25,8 @@ public class Main {
                 server.readRequest();
                 if(verbose) System.out.println("Connection established. " + new Date());
 
+                Thread thread = new Thread(server);
+                thread.start();
 
             }
 
