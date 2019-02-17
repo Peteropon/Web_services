@@ -12,7 +12,6 @@ public class HTTPServer implements Runnable, MethodHandler{
     static final int PORT = 8081;
     static final String FILE_NOT_FOUND ="404.html";
     static final String DEFAULT_FILE = "src/index.html";
-    static final String METHOD_NOT_SUPPORTED = "not_supported.html";
     static final File WEB_ROOT = new File(".");
 
     static List<HTTPMethod> httpMethods = new ArrayList();
@@ -63,23 +62,22 @@ public class HTTPServer implements Runnable, MethodHandler{
             String request = parse.nextToken().toLowerCase();
             System.out.println(httpMethod);
 
-            Class<?> requestType = Class.forName(httpMethod);
-            Class<?> httpType = requestType.getClass();
-            Constructor c = requestType.getConstructor(httpType);
-            HTTPMethod method = (HTTPMethod) c.newInstance(httpType);
-            //HTTPMethod response = (HTTPMethod) requestType.newInstance();
-            method.execute(request, socket);
+//            Class<?> requestType = Class.forName(httpMethod);
+//            Class<?> httpType = requestType.getClass();
+//            Constructor c = requestType.getConstructor(httpType);
+//            HTTPMethod method = (HTTPMethod) c.newInstance(httpType);
+//            //HTTPMethod response = (HTTPMethod) requestType.newInstance();
+//            method.execute(request, socket);
 
 
 
-//            for (HTTPMethod method: httpMethods) {
-//                if(method.getClass().getSimpleName().toUpperCase().equals(httpMethod)){
-//                    method.execute(request, socket);
-//                }
-//            }
+            for (HTTPMethod method: httpMethods) {
+                if(method.getClass().getSimpleName().toUpperCase().equals(httpMethod)){
+                    method.execute(request, socket);
+                }
+            }
 
-        } catch (IOException | ClassNotFoundException | InstantiationException | IllegalAccessException
-                | NoSuchMethodException | InvocationTargetException e) {
+        } catch (IOException  e) {
             e.printStackTrace();
         }
     }
