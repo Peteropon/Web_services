@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.net.URLDecoder;
 import java.util.*;
 
 public class HTTPServer implements Runnable, MethodHandler{
@@ -16,6 +17,7 @@ public class HTTPServer implements Runnable, MethodHandler{
 
     static List<HTTPMethod> httpMethods = new ArrayList();
     static List<Feature> features = new ArrayList();
+    static Map<String, Object> parameters = new HashMap<>();
 
     private Socket socket;
     HTTPMethod Method = new HTTPMethod();
@@ -54,8 +56,11 @@ public class HTTPServer implements Runnable, MethodHandler{
             String input = in.readLine();
             StringTokenizer parse =  new StringTokenizer(input);
             String httpMethod = parse.nextToken().toUpperCase();
-            String request = parse.nextToken().toLowerCase();
+            String requestCrude = parse.nextToken().toLowerCase();
+            String request = requestCrude.substring(1);
             System.out.println("HTTP method: " + httpMethod);
+            parseQuery(request, parameters);
+            System.out.println("Here are the parameters: " + parameters.toString());
 
 //            Class<?> requestType = Class.forName(httpMethod);
 //            Class<?> httpType = requestType.getClass();

@@ -45,11 +45,11 @@ public class Head extends HTTPMethod {
 
     public String getContentType(String request) {
         if(request.endsWith(".html") || request.endsWith(".htm")) return "text/html";
-        else if(request.endsWith(".png") || request.endsWith(".jpg")) return "text/jpg";
+        else if(request.endsWith(".png") || request.endsWith(".jpg")) return "image/jpg";
         else if(request.endsWith(".css")) return "text/css";
-        else if (request.endsWith(".json")) return "text/json";
-        else if (request.endsWith(".js")) return "text/js";
-        else if (request.endsWith(".pdf")) return "text/pdf";
+        else if (request.endsWith(".json")) return "application/json";
+        else if (request.endsWith(".js")) return "text/javascript";
+        else if (request.endsWith(".pdf")) return "application/pdf";
         else return "text/plain";
     }
 

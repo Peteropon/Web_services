@@ -4,8 +4,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Date;
 
-import static client.HTTPServer.FILE_NOT_FOUND;
-import static client.HTTPServer.WEB_ROOT;
+import static client.HTTPServer.*;
 
 public class Post extends HTTPMethod {
     public void startWork(String request, Socket clientSocket, HTTPMethod target) {
@@ -17,6 +16,10 @@ public class Post extends HTTPMethod {
         try {
             byte[] fileData = readFileData(file, fileLength);
             out = new PrintWriter(clientSocket.getOutputStream());
+            StringBuilder response = new StringBuilder();
+            for (String key: parameters.keySet()) {
+                response.append(key).append(" = ").append(parameters.get(key)).append("\n");
+            }
             out.println("HTTP/1.1 200 OK");
             out.println("Server: Java HTTP Server from Mr Johansson's : 1.0");
             out.println("Date: " + new Date());
@@ -42,11 +45,11 @@ public class Post extends HTTPMethod {
 
     public String getContentType(String request) {
         if(request.endsWith(".html") || request.endsWith(".htm")) return "text/html";
-        else if(request.endsWith(".png") || request.endsWith(".jpg")) return "text/jpg";
+        else if(request.endsWith(".png") || request.endsWith(".jpg")) return "image/jpg";
         else if(request.endsWith(".css")) return "text/css";
-        else if (request.endsWith(".json")) return "text/json";
-        else if (request.endsWith(".js")) return "text/js";
-        else if (request.endsWith(".pdf")) return "text/pdf";
+        else if (request.endsWith(".json")) return "application/json";
+        else if (request.endsWith(".js")) return "text/javascript";
+        else if (request.endsWith(".pdf")) return "application/pdf";
         else return "text/plain";
     }
 

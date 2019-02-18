@@ -15,7 +15,6 @@ public class Get extends HTTPMethod {
         int index = 8;
         String first = request.substring(1, index);
         if (first.equalsIgnoreCase("feature")) {
-//            String methodName = request.substring(index + 1, request.indexOf("=", index + 1));
             System.out.println(first);
             String param = request.substring(request.lastIndexOf("=") + 1);
             System.out.println(param);
@@ -60,10 +59,10 @@ public class Get extends HTTPMethod {
     private String getContentType(String request) {
         if(request.endsWith(".html") || request.endsWith(".htm")) return "text/html";
         else if(request.endsWith(".css")) return "text/css";
-        else if(request.endsWith(".jpg")) return "text/jpg";
-        else if (request.endsWith(".json")) return "text/json";
-        else if (request.endsWith(".js")) return "text/js";
-        else if (request.endsWith(".pdf")) return "text/plain";
+        else if(request.endsWith(".jpg")) return "image/jpg";
+        else if (request.endsWith(".json")) return "application/json";
+        else if (request.endsWith(".js")) return "text/javascript";
+        else if (request.endsWith(".pdf")) return "application/pdf";
         else return "text/html";
     }
 
