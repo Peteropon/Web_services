@@ -30,16 +30,9 @@ public class HTTPServer implements Runnable, MethodHandler{
     }
 
     public void run() {
-
-        try {
-            readRequest();
-            System.out.println(Thread.currentThread().getName());
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Thread thread = new Thread();
-        thread.start();
+        System.out.println(Thread.currentThread().getName());
+        readRequest();
+        //socket.close();
 
     }
 
@@ -56,7 +49,8 @@ public class HTTPServer implements Runnable, MethodHandler{
 
     public void readRequest() {
 
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))){
+        try {
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String input = in.readLine();
             StringTokenizer parse =  new StringTokenizer(input);
             String httpMethod = parse.nextToken().toUpperCase();

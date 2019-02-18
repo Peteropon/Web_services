@@ -22,7 +22,7 @@ public class Main {
 
             while (true){
                 HTTPServer server = new HTTPServer(serverSocket.accept());
-                server.readRequest();
+                //server.run();
                 if(verbose) System.out.println("Connection established. " + new Date());
 
                 Thread thread = new Thread(server);

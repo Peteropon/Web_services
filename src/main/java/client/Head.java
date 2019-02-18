@@ -33,9 +33,11 @@ public class Head extends HTTPMethod {
             //dataOut.write(fileData, 0, fileLength);
             dataOut.flush();
             dataOut.close();
-            clientSocket.close();
+
             System.out.println("Response sent successfully.");
-        } catch (IOException e) {
+        } catch (FileNotFoundException fnf){
+            fileNotFound(content, clientSocket);
+        }catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -70,7 +72,7 @@ public class Head extends HTTPMethod {
             dataOut.write(fileData, 0, fileLength);
             dataOut.flush();
             dataOut.close();
-            clientSocket.close();
+
         }catch (IOException io){
             System.err.println("Error with file not found exception : " + io.getMessage());
         }
