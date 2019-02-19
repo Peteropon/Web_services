@@ -9,11 +9,10 @@ import static client.Head.getBytes;
 
 public class Get extends HTTPMethod {
 
-    public void startWork(String request, Socket clientSocket, HTTPMethod target){
+    public void execute(String request, Socket clientSocket) {
 
-        //int index = request.endsWith("/") ? request.indexOf("/", 1) : 1;
-        int index = 8;
-        String first = request.substring(1, index);
+        int index = request.length()>8 ? 7 : 2;
+        String first = request.substring(0, index);
         if (first.equalsIgnoreCase("feature")) {
             System.out.println(first);
             String param = request.substring(request.lastIndexOf("=") + 1);
@@ -21,9 +20,16 @@ public class Get extends HTTPMethod {
             for (Feature f : features) {
                 //if(f.getClass().getSimpleName().equalsIgnoreCase("feature1")){
                 f.createHTML(param);
+                File file = f.getHtmlFile();
+                int fileLength = (int) file.length();
+                printResponse("text/html", file, fileLength, clientSocket);
                 //}
             }
         } else {
+            File file = new File(WEB_ROOT, request);
+            System.out.println("Requested type: " + request);
+            int fileLength = (int) file.length();
+            String content = getContentType(request);
             printResponse(content, file, fileLength, clientSocket);
         }
     }
@@ -45,7 +51,7 @@ public class Get extends HTTPMethod {
             dataOut.write(fileData, 0, fileLength);
             dataOut.flush();
             dataOut.close();
-            clientSocket.close();
+
             System.out.println("Response sent successfully.");
 
         } catch (FileNotFoundException fnf){
@@ -88,7 +94,7 @@ public class Get extends HTTPMethod {
             dataOut.write(fileData, 0, fileLength);
             dataOut.flush();
             dataOut.close();
-            clientSocket.close();
+
         }catch (IOException io){
             System.err.println("Error with file not found exception : " + io.getMessage());
         }
