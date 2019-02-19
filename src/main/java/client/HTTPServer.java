@@ -1,9 +1,9 @@
 package client;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URLDecoder;
 import java.util.*;
@@ -20,15 +20,9 @@ public class HTTPServer implements Runnable, MethodHandler{
     static Map<String, Object> parameters = new HashMap<>();
 
     private Socket socket;
-    HTTPMethod Method = new HTTPMethod();
-    private Object HTTPMethod;
 
     public HTTPServer(Socket socket) {
         this.socket = socket;
-    }
-
-    public HTTPServer(Object HTTPMethod) {
-        this.HTTPMethod = HTTPMethod;
     }
 
     public void run() {
@@ -36,17 +30,6 @@ public class HTTPServer implements Runnable, MethodHandler{
         readRequest();
         //socket.close();
 
-    }
-
-    void startWork(String request, Socket clientSocket, HTTPMethod target) {
-        try {
-            Class<?> requestType = Class.forName(request);
-            MethodHandler response = (MethodHandler) requestType.newInstance();
-            response.setTarget(target);
-            response.handleRequest();
-        } catch (IllegalAccessException | InstantiationException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
     }
 
     public void readRequest() {
@@ -79,17 +62,45 @@ public class HTTPServer implements Runnable, MethodHandler{
         }
     }
 
+    void parseQuery(String query, Map<String, Object> params) throws UnsupportedEncodingException {
 
-    @Override
-    public void setTarget(HTTPMethod target) {
-        if (Method.getClass().isInstance(target)){
-            Method = target;
-        }
+            if (query != null) {
+                query = query.substring(query.indexOf("?")+1);
+                String[] pairs = query.split("[&]");
+                for (String pair : pairs) {
+                    String[] param = pair.split("[=]");
+                    String key = null;
+                    String value = null;
+                    if (param.length > 0) {
+                        key = URLDecoder.decode(param[0],
+                                System.getProperty("file.encoding"));
+                    }
+
+                    if (param.length > 1) {
+                        value = URLDecoder.decode(param[1],
+                                System.getProperty("file.encoding"));
+                    }
+
+                    if (params.containsKey(key)) {
+                        Object obj = params.get(key);
+                        if (obj instanceof List<?>) {
+                            List<String> values = (List<String>) obj;
+                            values.add(value);
+
+                        } else if (obj instanceof String) {
+                            List<String> values = new ArrayList<>();
+                            values.add((String) obj);
+                            values.add(value);
+                            params.put(key, values);
+                        }
+                    } else {
+                        params.put(key, value);
+                    }
+                }
+            }
     }
 
     @Override
     public void handleRequest() {
-        Thread thread = new Thread(HTTPMethod instanceof Runnable ? (Runnable) Method : this);
-        thread.start();
     }
 }
