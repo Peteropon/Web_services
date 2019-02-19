@@ -8,7 +8,8 @@ import static client.HTTPServer.FILE_NOT_FOUND;
 import static client.HTTPServer.WEB_ROOT;
 
 public class Head extends HTTPMethod {
-    public void startWork(String request, Socket clientSocket, HTTPMethod target) {
+
+    public void execute(String request, Socket clientSocket) {
         File file = new File(WEB_ROOT, request);
         System.out.println("Requested type: " + request);
         int fileLength = (int) file.length();
