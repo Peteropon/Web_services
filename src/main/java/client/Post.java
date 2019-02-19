@@ -23,9 +23,10 @@ public class Post extends HTTPMethod {
             out.println("HTTP/1.1 200 OK");
             out.println("Server: Java HTTP Server from Mr Johansson's : 1.0");
             out.println("Date: " + new Date());
-            out.println("Content-type: " + content);
+            out.println("Content-type: " + "text/plain");
             out.println("Content-length: " + fileLength);
             out.println();
+            out.println(response);
             out.flush();
             BufferedOutputStream dataOut = new BufferedOutputStream(clientSocket.getOutputStream());
             dataOut.write(fileData, 0, fileLength);

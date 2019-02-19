@@ -54,30 +54,27 @@ public class HTTPServer implements Runnable, MethodHandler{
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String input = in.readLine();
-            StringTokenizer parse =  new StringTokenizer(input);
+            StringTokenizer parse = new StringTokenizer(input);
             String httpMethod = parse.nextToken().toUpperCase();
             String requestCrude = parse.nextToken().toLowerCase();
-            String request = requestCrude.substring(1);
-            System.out.println("HTTP method: " + httpMethod);
-            parseQuery(request, parameters);
-            System.out.println("Here are the parameters: " + parameters.toString());
-
-//            Class<?> requestType = Class.forName(httpMethod);
-//            Class<?> httpType = requestType.getClass();
-//            Constructor c = requestType.getConstructor(httpType);
-//            HTTPMethod method = (HTTPMethod) c.newInstance(httpType);
-//            //HTTPMethod response = (HTTPMethod) requestType.newInstance();
-//            method.createHTML(request, socket);
+            if (requestCrude.length() <= 1) {
+                System.out.println(requestCrude);
+                new RequestHandler(in, httpMethod);
+            } else {
+                String request = requestCrude.substring(1);
+                System.out.println("HTTP method: " + httpMethod);
+                parseQuery(request, parameters);
+                System.out.println("Here are the parameters: " + parameters.toString());
 
 
-
-            for (HTTPMethod method: httpMethods) {
-                if(method.getClass().getSimpleName().toUpperCase().equals(httpMethod)){
-                    method.execute(request, socket);
+                for (HTTPMethod method : httpMethods) {
+                    if (method.getClass().getSimpleName().toUpperCase().equals(httpMethod)) {
+                        method.execute(request, socket);
+                    }
                 }
-            }
 
-        } catch (IOException  e) {
+            }
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

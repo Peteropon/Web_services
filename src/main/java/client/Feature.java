@@ -4,6 +4,7 @@ import java.io.*;
 
 import static client.HTTPServer.WEB_ROOT;
 
+@Address("/reverse")
 public class Feature {
 
     static final String REVERSE ="Reverse.html";
