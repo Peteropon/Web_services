@@ -7,8 +7,14 @@ import java.util.Date;
 import static client.HTTPServer.*;
 
 public class Post extends HTTPMethod {
-    public void startWork(String request, Socket clientSocket, HTTPMethod target) {
 
+    public void execute(String request, Socket clientSocket) {
+
+        File file = new File(WEB_ROOT, "postTest.html");
+        System.out.println("Requested type: " + request);
+        int fileLength = (int) file.length();
+        String content = getContentType(request);
+        printResponse(content, file, fileLength, clientSocket);
     }
 
     public void printResponse(String content, File file, int fileLength, Socket clientSocket){
